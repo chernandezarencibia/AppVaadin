@@ -1,11 +1,14 @@
 package com.shelterApp;
 
+import java.util.ArrayList;
+
 public class Shelter {
 
     private int id;
     private String address;
     private String name;
     private String img;
+
 
     public Shelter(int id, String address, String name, String img) {
         this.id = id;
@@ -45,4 +48,7 @@ public class Shelter {
     public void setImg(String img) {
         this.img = img;
     }
-}
+
+
+    }
+
