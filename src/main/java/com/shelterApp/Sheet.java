@@ -3,6 +3,7 @@ package com.shelterApp;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Route("SecondView")
 @UrlParameterMapping(":Id")
@@ -35,10 +37,10 @@ public class Sheet extends Div implements HasUrlParameterMapping {
     @UrlParameter
     public String Id;
 
-
+    FormLayout fl = new FormLayout();
     public Sheet(){
 
-        FormLayout fl = new FormLayout();
+
 
         fl.setResponsiveSteps(new FormLayout.ResponsiveStep("10em", 1));
         Image img = new Image("http://localhost:8081/img/beagle.jpg", "algo");
@@ -46,7 +48,7 @@ public class Sheet extends Div implements HasUrlParameterMapping {
         img.setHeight("10%");
         TextField labelField = new TextField();
         labelField.setLabel("Name");
-        Button btn = new Button("algo");
+        Button btn = new Button("Ver empleados");
         btn.addClickListener(e->{
            gottem();
         });
@@ -74,10 +76,21 @@ public class Sheet extends Div implements HasUrlParameterMapping {
             employees.add(new Employee(jsonArray.getJSONObject(i).getInt("id"), jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("lastName1"),
                     jsonArray.getJSONObject(i).getString("lastName2"), jsonArray.getJSONObject(i).getInt("telephone"),
                     jsonArray.getJSONObject(i).getString("email"), jsonArray.getJSONObject(i).getString("dni")));
-
         }
 
 
+        Grid<Employee> employeeGrid = new Grid<>(Employee.class);
+        employeeGrid.setItems(employees);
+        employeeGrid.removeColumnByKey("id");
+
+        employeeGrid.addSelectionListener(event -> {
+//            Set<Employee> selected =  event.getAllSelectedItems();
+//            Object[] personalData = selected.toArray();
+//            getUI().ifPresent(ui -> ui.navigate("Sheet" + "/" + personalData.toString() + personalData[1]));
+        });
+
+
+        this.add(employeeGrid);
     }
 
 

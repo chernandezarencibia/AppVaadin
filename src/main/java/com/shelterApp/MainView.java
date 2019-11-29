@@ -37,18 +37,7 @@ import java.util.List;
 public class MainView extends Div{
     FormLayout fl = new FormLayout();
     public MainView() {
-
-
-
             tryIt();
-
-
-
-       Button routerButton = new Button("There!");
-        routerButton.addClickListener( e-> {
-            routerButton.getUI().ifPresent(ui -> ui.navigate("SecondView"));
-        });
-
     }
 
     private void tryIt() {
@@ -69,14 +58,6 @@ public class MainView extends Div{
 
 
 
-//        Grid<Shelter> algo = new Grid<>(Shelter.class);
-//        algo.setItems(Shelters);
-//        algo.addColumn(Shelter::getName).setHeader("Name");
-//        algo.addColumn(Shelter::getAddress).setHeader("Address");
-//        algo.removeColumnByKey("id");
-//        algo.removeColumnByKey("img");
-//
-//        this.add(algo);
 
 
 

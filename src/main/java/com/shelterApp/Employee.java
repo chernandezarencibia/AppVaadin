@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Employee {
     private int id;
-    private int ShelterId;
     private String name;
     private String lastName1;
     private String lastName2;
@@ -29,14 +28,6 @@ public class Employee {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getShelterId() {
-        return ShelterId;
-    }
-
-    public void setShelterId(int shelterId) {
-        ShelterId = shelterId;
     }
 
     public String getName() {
@@ -87,5 +78,9 @@ public class Employee {
         this.DNI = DNI;
     }
 
+    @Override
+    public String toString(){
+        return DNI + "," + email + "," + name + "," + lastName1 + "," + lastName2 + "," + telephone;
+    }
 
 }
