@@ -5,19 +5,17 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 
+import org.vaadin.flow.helper.HasUrlParameterMapping;
 import org.vaadin.flow.helper.UrlParameter;
 import org.vaadin.flow.helper.UrlParameterMapping;
 
-@Route("Sheet")
-@UrlParameterMapping(":id&:name")
-public class SheetEmployee extends Div {
+@Route("SheetEmployee")
+@UrlParameterMapping(":id")
+public class SheetEmployee extends Div implements HasUrlParameterMapping {
     FormLayout fl = new FormLayout();
 
     @UrlParameter
     public String id;
-
-    @UrlParameter
-    public String name;
 
     public SheetEmployee(){
         Button btn = new Button("Try it");
@@ -27,6 +25,6 @@ public class SheetEmployee extends Div {
     }
 
     private void tryIt() {
-        System.out.println(id + "" + name);
+        System.out.println(id);
     }
 }
