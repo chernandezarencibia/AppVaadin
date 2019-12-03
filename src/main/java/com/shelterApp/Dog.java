@@ -58,5 +58,9 @@ private int code;
         this.code = code;
     }
 
+    @Override
+    public String toString(){
+        return name + "," + breed + "," + age + "," + code;
+    }
 }
 

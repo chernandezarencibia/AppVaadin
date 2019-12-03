@@ -22,12 +22,11 @@ import com.vaadin.flow.router.Route;
 
 import com.vaadin.flow.server.PWA;
 
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -35,12 +34,13 @@ import org.json.JSONArray;
 
 
 import javax.ws.rs.client.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+
 import java.io.IOException;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * The main view contains a button and a click listener.
@@ -50,35 +50,35 @@ import java.util.List;
 public class MainView extends Div {
     FormLayout fl = new FormLayout();
 
-    public MainView() {
-        tryIt();
+    public MainView() throws IOException {
+        loadData();
     }
 
-    private void tryIt() {
-        Button algo = new Button("algo");
-        algo.addClickListener(e -> {
-            try {
-                createShelter();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-        fl.add(algo);
+    private void loadData() throws IOException {
+
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/getShelters");
 
         String s = target.request().get(String.class);
 
         JSONArray jsonArray = new JSONArray(s);
+        client.close();
+        createShelterArray(jsonArray);
 
+
+    }
+
+
+    private void createShelterArray(JSONArray jsonArray) throws IOException {
         List<Shelter> Shelters = new ArrayList<>();
-
         for (int i = 0; i < jsonArray.length(); i++) {
-
             Shelters.add(new Shelter(jsonArray.getJSONObject(i).getInt("id"), jsonArray.getJSONObject(i).getString("address"), jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("img")));
         }
+        addCards(Shelters);
+    }
 
-        for (Shelter shelterOBJ : Shelters) {
+    private void addCards(List<Shelter> shelters) throws IOException {
+        for (Shelter shelterOBJ : shelters) {
             Image image = new Image(shelterOBJ.getImg(), "bg.png");
             image.setSizeFull();
             com.github.appreciated.card.Card card = new com.github.appreciated.card.Card(
@@ -96,36 +96,41 @@ public class MainView extends Div {
                     )
 
             );
-
-
             fl.add(card);
             add(fl);
         }
-
-
     }
 
-    public void createShelter() throws IOException {
+
+        public void createShelter() throws IOException {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/createShelter");
+
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("address", "allí"));
+            params.add(new BasicNameValuePair("name", "Aquí"));
+            params.add(new BasicNameValuePair("img", "soy aquí"));
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            CloseableHttpResponse response = client.execute(httpPost);
+            client.close();
+
 //        CloseableHttpClient client = HttpClients.createDefault();
-//        HttpPost httpPost = new HttpPost("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/createShelter");
+//        HttpPut httpPut = new HttpPut("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/updateShelter");
+//        httpPut.setHeader("Accept", "application/json");
+//        httpPut.setHeader("Content-type", "application/json");
+//        String inputJson = "{\n" +
+//                "  \"id\": \"5\",\n" +
+//                "  \"address\": \" Av. Andalucia, 147, 29740 Torre del Mar, Málaga\",\n" +
+//                "  \"name\": \"Albergue Municipal de Animales\"\n" +
+//                "  \"img\": \"23\"\n" +
+//                "}";
 //
-//        List<NameValuePair> params = new ArrayList<>();
-//        params.add(new BasicNameValuePair("address", "allí"));
-//        params.add(new BasicNameValuePair("name", "Aquí"));
-//        params.add(new BasicNameValuePair("img", "soy aquí"));
-//        httpPost.setEntity(new UrlEncodedFormEntity(params));
-//        CloseableHttpResponse response = client.execute(httpPost);
+//        StringEntity stringEntity = new StringEntity(inputJson);
+//        httpPut.setEntity(stringEntity);
+//        HttpResponse response = client.execute(httpPut);
 //        client.close();
-
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget
-                = client.target("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/createShelter");
-        Invocation.Builder invocationBuilder
-                = webTarget.request(MediaType.APPLICATION_JSON);
-        Response response
-                = invocationBuilder
-                .post(Entity.entity(new Shelter(0, "aquí", "yo", "http://Espanita.jpg"), MediaType.APPLICATION_JSON));
+        }
 
     }
-}
+
 

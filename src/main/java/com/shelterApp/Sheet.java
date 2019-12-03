@@ -12,11 +12,13 @@ import java.util.List;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.vaadin.flow.helper.HasUrlParameterMapping;
 import org.vaadin.flow.helper.UrlParameter;
 import org.vaadin.flow.helper.UrlParameterMapping;
 
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -31,27 +33,25 @@ public class Sheet extends Div implements HasUrlParameterMapping {
     @UrlParameter
     public String Id;
 
+    TextField labelField;
+    TextField labelField2;
+    Image img;
     FormLayout fl = new FormLayout();
+    Button getAll = new Button("See Shelter");
     public Sheet(){
 
-        getShelter();
+        getAll.addClickListener(e->{
+           getShelter();
+        });
 
         fl.setResponsiveSteps(new FormLayout.ResponsiveStep("10em", 1));
-        Image img = new Image("http://localhost:8081/img/beagle.jpg", "algo");
+        add(getAll);
 
-        img.setHeight("10%");
-        TextField labelField = new TextField();
-        labelField.setLabel("Name");
-        Button btn = new Button("Employees");
-        btn.addClickListener(e->{
-           getEmployees();
-        });
-        TextField labelField2 = new TextField();
-        labelField2.setLabel("Address");
-        fl.add(img, labelField, labelField2, btn);
-        add(fl);
+
 
     }
+
+
 
 
     public void getEmployees(){
@@ -60,9 +60,8 @@ public class Sheet extends Div implements HasUrlParameterMapping {
         WebTarget target = client.target("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Employee/getEmployeesByShelter?id="+Id);
         String s = target.request().get(String.class);
         JSONArray jsonArray = new JSONArray(s);
-        for (int i = 0; i < jsonArray.length(); i++) {
-            System.out.println();
-        }
+
+        client.close();
         List<Employee> employees = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             employees.add(new Employee(jsonArray.getJSONObject(i).getInt("id"), jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("lastName1"),
@@ -89,10 +88,36 @@ public class Sheet extends Div implements HasUrlParameterMapping {
         this.add(employeeGrid);
     }
 
-    public Shelter getShelter(){
 
+    public void getShelter(){
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/getShelterById?id="+Id);
+        String s = target.request().get(String.class);
+        JSONObject shelter = new JSONObject(s);
+        client.close();
+        setDataInView(shelter);
 
-        return null;
+    }
+
+    public void setDataInView(JSONObject shelter){
+        img = new Image(shelter.getString("img"), "algo");
+        img.setHeight("10%");
+        labelField = new TextField();
+        labelField.setValue(shelter.getString("address"));
+        labelField2 = new TextField();
+        labelField2.setValue(shelter.getString("name"));
+        labelField2.setLabel("Address");
+        labelField.setLabel("Name");
+        labelField.setEnabled(false);
+        labelField2.setEnabled(false);
+
+        Button btn = new Button("Employees");
+        btn.addClickListener(e->{
+            getEmployees();
+        });
+        getAll.setVisible(false);
+        fl.add(img, labelField, labelField2, btn);
+        add(fl);
     }
 
 
