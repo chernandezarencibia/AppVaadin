@@ -18,44 +18,41 @@ import org.vaadin.flow.helper.UrlParameter;
 import org.vaadin.flow.helper.UrlParameterMapping;
 
 
-import javax.annotation.PostConstruct;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import java.util.ArrayList;
 import java.util.Set;
 
-@Route("SecondView")
+@Route("Shelter")
 @UrlParameterMapping(":Id")
-public class Sheet extends Div implements HasUrlParameterMapping {
+public class ShelterSheet extends Div implements HasUrlParameterMapping {
 
 
     @UrlParameter
     public String Id;
 
+    Button btn;
     TextField labelField;
     TextField labelField2;
     Image img;
     FormLayout fl = new FormLayout();
     Button getAll = new Button("See Shelter");
-    public Sheet(){
-
+    public ShelterSheet(){
         getAll.addClickListener(e->{
            getShelter();
         });
 
         fl.setResponsiveSteps(new FormLayout.ResponsiveStep("10em", 1));
+
         add(getAll);
-
-
-
     }
 
 
 
 
     public void getEmployees(){
-
+        btn.setVisible(false);
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Employee/getEmployeesByShelter?id="+Id);
         String s = target.request().get(String.class);
@@ -111,7 +108,7 @@ public class Sheet extends Div implements HasUrlParameterMapping {
         labelField.setEnabled(false);
         labelField2.setEnabled(false);
 
-        Button btn = new Button("Employees");
+        btn = new Button("Employees");
         btn.addClickListener(e->{
             getEmployees();
         });

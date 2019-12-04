@@ -7,16 +7,25 @@ private String name;
 private String breed;
 private int age;
 private int code;
+private String img;
 
 
-    public Dog(int id, String name, String breed, int age, int code) {
+    public Dog(int id, String name, String breed, int age, int code, String img) {
         this.id = id;
         this.name = name;
         this.breed = breed;
         this.age = age;
         this.code = code;
+        this.img = img;
     }
 
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
 
     public int getId() {
         return id;

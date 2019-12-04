@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
@@ -18,17 +19,19 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @Route("SheetEmployee")
 @UrlParameterMapping(":id")
-public class SheetEmployee extends Div implements HasUrlParameterMapping {
+public class EmployeeSheet extends Div implements HasUrlParameterMapping {
     FormLayout fl = new FormLayout();
 
     @UrlParameter
     public String id;
     Button btn = new Button("See Employeee");
-    public SheetEmployee(){
+    public EmployeeSheet(){
 
         btn.addClickListener(e-> getEmployee());
         add(btn);
@@ -77,7 +80,8 @@ public class SheetEmployee extends Div implements HasUrlParameterMapping {
                 new FormLayout.ResponsiveStep("40em", 3));
         add(fl);
 
-        Text title = new Text("Dogs taken care by this employee");
+        Label title = new Label("Dogs taken care by this employee");
+
 
         add(title);
         JSONArray dogArray = employee.getJSONArray("dogs");
@@ -87,13 +91,21 @@ public class SheetEmployee extends Div implements HasUrlParameterMapping {
 
         for (int i = 0; i < dogArray.length(); i++) {
             dogs.add(new Dog(dogArray.getJSONObject(i).getInt("id"), dogArray.getJSONObject(i).getString("name"), dogArray.getJSONObject(i).getString("breed"),
-                    dogArray.getJSONObject(i).getInt("age"), dogArray.getJSONObject(i).getInt("code")));
+                    dogArray.getJSONObject(i).getInt("age"), dogArray.getJSONObject(i).getInt("code"), dogArray.getJSONObject(i).getString("img")));
         }
-
-
         Grid<Dog> dogGrid = new Grid<>(Dog.class);
         dogGrid.setItems(dogs);
         dogGrid.removeColumnByKey("id");
+        dogGrid.removeColumnByKey("img");
+
+        dogGrid.addSelectionListener(event -> {
+            Set<Dog> selected = event.getAllSelectedItems();
+            Iterator<Dog> algo =  selected.iterator();
+            while(algo.hasNext()){
+                getUI().ifPresent(ui -> ui.navigate("DogSheet" + "/" + algo.next().getId()));
+            }
+
+        });
         add(dogGrid);
         btn.setVisible(false);
 

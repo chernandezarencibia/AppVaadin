@@ -9,8 +9,6 @@ import com.github.appreciated.card.label.SecondaryLabel;
 import com.github.appreciated.card.label.TitleLabel;
 
 
-import com.vaadin.flow.component.button.Button;
-
 import com.vaadin.flow.component.formlayout.FormLayout;
 
 import com.vaadin.flow.component.html.Div;
@@ -86,12 +84,9 @@ public class MainView extends Div {
                     new TitleLabel(shelterOBJ.getName()).withWhiteSpaceNoWrap(),
                     image,
                     new PrimaryLabel(shelterOBJ.getAddress()),
-                    new SecondaryLabel("Some secondary text"),
-                    new IconItem(new Icon(VaadinIcon.ABACUS), "Icon Item title", "Icon Item description"),
-                    new Item("Item title", "Item description"),
                     new Actions(
-                            new ActionButton("Sheet", event -> {
-                                getUI().ifPresent(ui -> ui.navigate("SecondView" + "/" + String.valueOf(shelterOBJ.getId())));
+                            new ActionButton("Details", event -> {
+                                getUI().ifPresent(ui -> ui.navigate("Shelter" + "/" + String.valueOf(shelterOBJ.getId())));
                             })
                     )
 

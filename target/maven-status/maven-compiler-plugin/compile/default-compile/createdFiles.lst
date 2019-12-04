@@ -1,6 +1,7 @@
-com\shelterApp\SheetEmployee.class
-com\shelterApp\Sheet.class
+com\shelterApp\DogSheet.class
 com\shelterApp\Shelter.class
 com\shelterApp\Employee.class
+com\shelterApp\ShelterSheet.class
+com\shelterApp\EmployeeSheet.class
 com\shelterApp\Dog.class
 com\shelterApp\MainView.class
