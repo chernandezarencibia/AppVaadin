@@ -9,6 +9,7 @@ import com.github.appreciated.card.label.SecondaryLabel;
 import com.github.appreciated.card.label.TitleLabel;
 
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 
 import com.vaadin.flow.component.html.Div;
@@ -93,7 +94,17 @@ public class MainView extends Div {
             );
             fl.add(card);
             add(fl);
+
         }
+        Button btn = new Button("Try it");
+        btn.addClickListener(e->{
+            try {
+                createShelter();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        add(btn);
     }
 
 

@@ -4,4 +4,6 @@ com\shelterApp\Employee.class
 com\shelterApp\ShelterSheet.class
 com\shelterApp\EmployeeSheet.class
 com\shelterApp\Dog.class
+com\shelterApp\Appoint.class
 com\shelterApp\MainView.class
+com\shelterApp\EmployeeSheet$1.class

@@ -9,19 +9,25 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
+import com.vaadin.server.Page;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServletRequest;
+import com.vaadin.ui.UI;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.vaadin.crudui.crud.CrudListener;
+import org.vaadin.crudui.crud.CrudOperation;
+import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.flow.helper.HasUrlParameterMapping;
 import org.vaadin.flow.helper.UrlParameter;
 import org.vaadin.flow.helper.UrlParameterMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Route("SheetEmployee")
 @UrlParameterMapping(":id")
@@ -33,12 +39,14 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
     Button btn = new Button("See Employeee");
     public EmployeeSheet(){
 
+        System.out.println(Page.getCurrent().getLocation());
         btn.addClickListener(e-> getEmployee());
         add(btn);
 
     }
 
     private void getEmployee(){
+
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Employee/getEmployeeById?id="+id);
         String s = target.request().get(String.class);
@@ -84,19 +92,11 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
 
 
         add(title);
-        JSONArray dogArray = employee.getJSONArray("dogs");
 
-
-        List<Dog> dogs = new ArrayList<>();
-
-        for (int i = 0; i < dogArray.length(); i++) {
-            dogs.add(new Dog(dogArray.getJSONObject(i).getInt("id"), dogArray.getJSONObject(i).getString("name"), dogArray.getJSONObject(i).getString("breed"),
-                    dogArray.getJSONObject(i).getInt("age"), dogArray.getJSONObject(i).getInt("code"), dogArray.getJSONObject(i).getString("img")));
-        }
         Grid<Dog> dogGrid = new Grid<>(Dog.class);
-        dogGrid.setItems(dogs);
-        dogGrid.removeColumnByKey("id");
-        dogGrid.removeColumnByKey("img");
+//        dogGrid.setItems(dogs);
+//        dogGrid.removeColumnByKey("id");
+//        dogGrid.removeColumnByKey("img");
 
         dogGrid.addSelectionListener(event -> {
             Set<Dog> selected = event.getAllSelectedItems();
@@ -106,8 +106,45 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
             }
 
         });
-        add(dogGrid);
+
+        //add(dogGrid);
+
         btn.setVisible(false);
 
+        GridCrud<Dog> a = new GridCrud(Dog.class);
+        a.getCrudFormFactory().setDisabledProperties("id", "img");
+        a.getGrid().removeColumnByKey("id");
+        a.getGrid().removeColumnByKey("img");
+        a.setCrudListener(new CrudListener<Dog>() {
+            @Override
+            public Collection<Dog> findAll() {
+                JSONArray dogArray = employee.getJSONArray("dogs");
+
+
+                List<Dog> dogs = new ArrayList<>();
+
+                for (int i = 0; i < dogArray.length(); i++) {
+                    dogs.add(new Dog(dogArray.getJSONObject(i).getInt("id"), dogArray.getJSONObject(i).getString("name"), dogArray.getJSONObject(i).getString("breed"),
+                            dogArray.getJSONObject(i).getInt("age"), dogArray.getJSONObject(i).getInt("code"), dogArray.getJSONObject(i).getString("img")));
+                }
+                return dogs;
+            }
+
+            @Override
+            public Dog add(Dog dog) {
+                return null;
+            }
+
+            @Override
+            public Dog update(Dog dog) {
+                return null;
+            }
+
+            @Override
+            public void delete(Dog dog) {
+
+            }
+        });
+        add(a);
     }
 }

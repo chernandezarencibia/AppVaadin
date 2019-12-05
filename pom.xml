@@ -152,6 +152,13 @@
             <artifactId>resteasy-client</artifactId>
             <version>4.4.1.Final</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.vaadin.crudui/crudui -->
+        <dependency>
+            <groupId>org.vaadin.crudui</groupId>
+            <artifactId>crudui</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
 
 
 
