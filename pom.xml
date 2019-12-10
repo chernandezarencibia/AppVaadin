@@ -88,6 +88,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.10</version>
+        </dependency>
 
 
 
@@ -107,11 +113,7 @@
             <artifactId>json</artifactId>
             <version>20190722</version>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>4.4.1.Final</version>
-        </dependency>
+
         <!-- https://mvnrepository.com/artifact/javax.measure/unit-api -->
         <dependency>
             <groupId>javax.measure</groupId>
@@ -127,26 +129,20 @@
             <artifactId>poi</artifactId>
             <version>3.17</version>
         </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin</artifactId>
-            <version>14.0.14</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-server</artifactId>
-            <version>8.9.0</version>
-        </dependency>
+
+        
         <dependency>
             <groupId>org.vaadin.helper</groupId>
             <artifactId>url-parameter-mapping</artifactId>
             <version>1.0.0-beta2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.squareup.okhttp/okhttp -->
-        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-json-jackson -->
-        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-client -->
-        <!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-client -->
-        <!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-client -->
+        <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.28.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
@@ -166,10 +162,7 @@
 
 
 
-        <!-- Thanks for using https://jar-download.com -->
 
-
-        <!-- Thanks for using https://jar-download.com -->
 
 
 

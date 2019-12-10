@@ -2,33 +2,22 @@ package com.shelterApp;
 
 import com.github.appreciated.card.action.ActionButton;
 import com.github.appreciated.card.action.Actions;
-import com.github.appreciated.card.content.IconItem;
-import com.github.appreciated.card.content.Item;
 import com.github.appreciated.card.label.PrimaryLabel;
-import com.github.appreciated.card.label.SecondaryLabel;
 import com.github.appreciated.card.label.TitleLabel;
 
 
+import com.shelterApp.entity.Shelter;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 
 import com.vaadin.flow.router.Route;
 
 import com.vaadin.flow.server.PWA;
 
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 
 
@@ -109,16 +98,7 @@ public class MainView extends Div {
 
 
         public void createShelter() throws IOException {
-            CloseableHttpClient client = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/createShelter");
 
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("address", "allí"));
-            params.add(new BasicNameValuePair("name", "Aquí"));
-            params.add(new BasicNameValuePair("img", "soy aquí"));
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-            CloseableHttpResponse response = client.execute(httpPost);
-            client.close();
 
 //        CloseableHttpClient client = HttpClients.createDefault();
 //        HttpPut httpPut = new HttpPut("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/updateShelter");

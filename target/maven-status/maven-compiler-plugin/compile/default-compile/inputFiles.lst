@@ -1,8 +1,8 @@
-C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\EmployeeSheet.java
-C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\Dog.java
-C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\ShelterSheet.java
-C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\Employee.java
-C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\Shelter.java
-C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\Appoint.java
+C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\sheet\DogSheet.java
+C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\entity\Employee.java
+C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\entity\Appoint.java
 C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\MainView.java
-C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\DogSheet.java
+C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\sheet\EmployeeSheet.java
+C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\entity\Shelter.java
+C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\entity\Dog.java
+C:\Users\AlumnadoTarde\SheltersApp\src\main\java\com\shelterApp\sheet\ShelterSheet.java
