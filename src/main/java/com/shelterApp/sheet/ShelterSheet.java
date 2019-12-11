@@ -15,6 +15,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -111,18 +113,48 @@ public class ShelterSheet extends Div implements HasUrlParameterMapping {
                     }
 
                 } catch(IOException e){
-
+                    e.printStackTrace();
                 }
 
-
-
-
-                return null;
+                return employee;
             }
 
             @Override
             public Employee update(Employee employee) {
-                return null;
+
+                JSONObject employeeJson = new JSONObject();
+                employeeJson.put("id", employee.getId());
+                employeeJson.put("name", employee.getName());
+                employeeJson.put("lastName1", employee.getLastName1());
+                employeeJson.put("lastName2", employee.getLastName2());
+                employeeJson.put("telephone", employee.getTelephone());
+                employeeJson.put("email", employee.getEmail());
+                employeeJson.put("dni", employee.getDNI());
+                try{
+                    String putEndpoint = "http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Employee/updateEmployee";
+
+
+                    HttpPut httpPut = new HttpPut(putEndpoint);
+                    httpPut.setHeader("Accept", "application/json");
+                    httpPut.setHeader("Content-type", "application/json");
+
+
+                    StringEntity params = new StringEntity(employeeJson.toString());
+
+                    httpPut.setEntity(params);
+
+                    try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                         CloseableHttpResponse response = httpClient.execute(httpPut)) {
+
+                        System.out.println(EntityUtils.toString(response.getEntity()));
+                    }
+
+
+                } catch(IOException e){
+                    e.printStackTrace();
+                }
+
+                return employee;
             }
 
             @Override
@@ -189,9 +221,7 @@ public class ShelterSheet extends Div implements HasUrlParameterMapping {
                 dialog.close();
             });
             Button cancelButton = new Button("Cancel");
-            cancelButton.addClickListener(a->{
-                dialog.close();
-            });
+            cancelButton.addClickListener(a-> dialog.close());
 
             dialog.add(new Label("Insert the id of the employee"), employeeIdField);
             dialog.add(cancelButton, confirmButton);

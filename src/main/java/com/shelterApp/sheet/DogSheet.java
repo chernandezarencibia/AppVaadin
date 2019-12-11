@@ -1,14 +1,20 @@
 package com.shelterApp.sheet;
 
 import com.shelterApp.entity.Appoint;
-import com.shelterApp.entity.Dog;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import elemental.json.Json;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.vaadin.crudui.crud.CrudListener;
@@ -20,6 +26,7 @@ import org.vaadin.flow.helper.UrlParameterMapping;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,9 +38,7 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
     @UrlParameter
     public String id;
     Button btn = new Button("See Dog");
-    Button btn1 = new Button("Add Appoint");
-    Button btn2 = new Button("Update Appoint");
-    Button btn3 = new Button("Delete appoint");
+
     Image img;
     TextField nameField;
     TextField breedField;
@@ -58,6 +63,7 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
     }
 
     private void setDataInView(JSONObject dog) {
+        btn.setVisible(false);
         img = new Image(dog.getString("img"), "bg.png");
         img.setHeight("10%");
 
@@ -85,9 +91,12 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
 
     private void getAppoints(JSONObject dog) {
         Client client = ClientBuilder.newClient();
-        Grid<Appoint> appointGrid = new Grid<>(Appoint.class);
+
 
         GridCrud<Appoint> a = new GridCrud(Appoint.class);
+
+
+        a.getCrudFormFactory().setDisabledProperties("dogName", "dogId", "userName");
         a.setCrudListener(new CrudListener<Appoint>() {
             @Override
             public Collection<Appoint> findAll() {
@@ -99,27 +108,71 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
                     WebTarget target = client.target("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/AppUser/getUserById?id="+dog.getJSONArray("appoints").getJSONObject(i).getJSONObject("id").getInt("userID"));
                     String s = target.request().get(String.class);
                     JSONObject user = new JSONObject(s);
-
-                    String date = appointsJsonArray.getJSONObject(i).getJSONObject("date").getInt("year") + "-"
-                            + appointsJsonArray.getJSONObject(i).getJSONObject("date").getInt("monthValue") + "-"
-                            + appointsJsonArray.getJSONObject(i).getJSONObject("date").getInt("dayOfMonth") + " "
-                            + appointsJsonArray.getJSONObject(i).getJSONObject("date").getInt("hour") + ":"
-                            + appointsJsonArray.getJSONObject(i).getJSONObject("date").getInt("minute");
-                    appointList.add(new Appoint(dog.getString("name"), user.getString("name"), date));
+                    appointList.add(new Appoint(dog.getString("name"),dog.getInt("id"), user.getString("name"), user.getInt("id"), appointsJsonArray.getJSONObject(i).getString("date")));
                 }
 
-                client.close();
+
                 return appointList;
             }
 
             @Override
             public Appoint add(Appoint appoint) {
-                return null;
+                try{
+                    HttpPost post = new HttpPost("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Appoint/createAppoint");
+                    JSONObject idJson = new JSONObject();
+                    idJson.put("userID", appoint.getUserId());
+                    idJson.put("dogID", id);
+                    JSONObject jsonObjectAppoint = new JSONObject();
+                    jsonObjectAppoint.put("id",idJson);
+                    jsonObjectAppoint.put("date", appoint.getDate());
+
+
+                    post.setEntity(new StringEntity(jsonObjectAppoint.toString()));
+                    post.setHeader("Content-type", "application/json");
+
+                    try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                         CloseableHttpResponse response = httpClient.execute(post)) {
+                        System.out.println(EntityUtils.toString(response.getEntity()));
+                    }
+
+                } catch(IOException e){
+                    e.printStackTrace();
+                }
+                return appoint;
             }
 
             @Override
             public Appoint update(Appoint appoint) {
-                return null;
+                JSONObject appointJson = new JSONObject();
+                JSONObject idJson = new JSONObject();
+                idJson.put("userID", appoint.getUserId());
+                idJson.put("dogID", id);
+                appointJson.put("date", appoint.getDate());
+                appointJson.put("id", id);
+                try{
+                    String putEndpoint = "http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Appoint/updateAppoint";
+
+
+                    HttpPut httpPut = new HttpPut(putEndpoint);
+                    httpPut.setHeader("Accept", "application/json");
+                    httpPut.setHeader("Content-type", "application/json");
+
+
+                    StringEntity params = new StringEntity(appointJson.toString());
+
+                    httpPut.setEntity(params);
+
+                    try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                         CloseableHttpResponse response = httpClient.execute(httpPut)) {
+
+                        System.out.println(EntityUtils.toString(response.getEntity()));
+                    }
+
+
+                } catch(IOException e){
+                    e.printStackTrace();
+                }
+                return appoint;
             }
 
             @Override
