@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * The main view contains a button and a click listener.
  */
-@Route
+@Route("MainView")
 @PWA(name = "Eloy", shortName = "elo2")
 public class MainView extends Div {
     FormLayout fl = new FormLayout();
@@ -55,8 +55,6 @@ public class MainView extends Div {
 
 
     }
-
-
     private void createShelterArray(JSONArray jsonArray) throws IOException {
         List<Shelter> Shelters = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -85,37 +83,11 @@ public class MainView extends Div {
             add(fl);
 
         }
-        Button btn = new Button("Try it");
-        btn.addClickListener(e->{
-            try {
-                createShelter();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-        add(btn);
+
     }
 
 
-        public void createShelter() throws IOException {
 
-
-//        CloseableHttpClient client = HttpClients.createDefault();
-//        HttpPut httpPut = new HttpPut("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Shelter/updateShelter");
-//        httpPut.setHeader("Accept", "application/json");
-//        httpPut.setHeader("Content-type", "application/json");
-//        String inputJson = "{\n" +
-//                "  \"id\": \"5\",\n" +
-//                "  \"address\": \" Av. Andalucia, 147, 29740 Torre del Mar, Málaga\",\n" +
-//                "  \"name\": \"Albergue Municipal de Animales\"\n" +
-//                "  \"img\": \"23\"\n" +
-//                "}";
-//
-//        StringEntity stringEntity = new StringEntity(inputJson);
-//        httpPut.setEntity(stringEntity);
-//        HttpResponse response = client.execute(httpPut);
-//        client.close();
-        }
 
     }
 

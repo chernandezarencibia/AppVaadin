@@ -2,6 +2,7 @@ package com.shelterApp.sheet;
 
 import com.shelterApp.entity.Dog;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
@@ -38,13 +39,15 @@ import java.util.List;
 @UrlParameterMapping(":id")
 public class EmployeeSheet extends Div implements HasUrlParameterMapping {
     FormLayout fl = new FormLayout();
+    Button dogDetails = new Button("Details for dog");
+
 
     @UrlParameter
     public String id;
     Button btn = new Button("See Employeee");
     public EmployeeSheet(){
 
-
+        fl.setResponsiveSteps(new FormLayout.ResponsiveStep("10em", 1));
         btn.addClickListener(e-> getEmployee());
         add(btn);
 
@@ -65,45 +68,65 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
         nameField.setLabel("Name");
         nameField.setValue(employee.getString("name"));
         nameField.setEnabled(false);
+        nameField.setSizeFull();
 
         TextField lastName1Field = new TextField();
         lastName1Field.setLabel("First name");
         lastName1Field.setValue(employee.getString("lastName1"));
         lastName1Field.setEnabled(false);
+        lastName1Field.setSizeFull();
 
         TextField lastName2Field = new TextField();
         lastName2Field.setLabel("Last name");
         lastName2Field.setValue(employee.getString("lastName2"));
         lastName2Field.setEnabled(false);
+        lastName2Field.setSizeFull();
 
         TextField telephoneField = new TextField();
         telephoneField.setLabel("Telephone");
         telephoneField.setValue(String.valueOf(employee.getInt("telephone")));
         telephoneField.setEnabled(false);
+        telephoneField.setSizeFull();
 
         TextField emailField = new TextField();
         emailField.setLabel("Email");
         emailField.setValue(employee.getString("email"));
         emailField.setEnabled(false);
+        emailField.setSizeFull();
 
         TextField dniField = new TextField();
         dniField.setLabel("DNI");
         dniField.setValue(employee.getString("dni"));
         dniField.setEnabled(false);
+        dniField.setSizeFull();
 
         fl.add(nameField, lastName1Field, lastName2Field,telephoneField,emailField,dniField);
 
-        fl.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("25em", 1),
-                new FormLayout.ResponsiveStep("32em", 2),
-                new FormLayout.ResponsiveStep("40em", 3));
+
         add(fl);
 
         Label title = new Label("Dogs taken care by this employee");
+        dogDetails.addClickListener(e->{
+            Dialog dialog = new Dialog();
+            TextField dogIdField = new TextField();
+            Button confirmButton = new Button("Confirm");
+            confirmButton.addClickListener(i->{
+                getUI().ifPresent(ui -> ui.navigate("DogSheet" + "/" +  dogIdField.getValue()));
+                dialog.close();
+            });
+            Button cancelButton = new Button("Cancel");
+            cancelButton.addClickListener(a-> dialog.close());
+
+            dialog.add(new Label("Insert the id of the dog"), dogIdField);
+            dialog.add(cancelButton, confirmButton);
+
+            dialog.setWidth("250px");
+            dialog.setHeight("150px");
+            dialog.open();
+        });
 
 
-
-        add(title);
+        add(title, dogDetails);
 
 
 
@@ -111,7 +134,6 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
 
         GridCrud<Dog> a = new GridCrud(Dog.class);
         a.getCrudFormFactory().setDisabledProperties("id", "img");
-        a.getGrid().removeColumnByKey("id");
         a.getGrid().removeColumnByKey("img");
 
         a.setCrudListener(new CrudListener<Dog>() {
@@ -163,7 +185,7 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
                 dogJson.put("breed", dog.getBreed());
                 dogJson.put("age", dog.getAge());
                 dogJson.put("code", dog.getCode());
-                dogJson.put("img", " ");
+                dogJson.put("img", dog.getImg());
                 try{
                     String putEndpoint = "http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Dog/updateDog";
                     CloseableHttpClient httpclient = HttpClients.createDefault();

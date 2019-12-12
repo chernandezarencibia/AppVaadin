@@ -16,6 +16,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -139,7 +140,7 @@ public class ShelterSheet extends Div implements HasUrlParameterMapping {
                     httpPut.setHeader("Content-type", "application/json");
 
 
-                    StringEntity params = new StringEntity(employeeJson.toString());
+                    StringEntity params = new StringEntity(employeeJson.toString(), ContentType.APPLICATION_JSON);
 
                     httpPut.setEntity(params);
 

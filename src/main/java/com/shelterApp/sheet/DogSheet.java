@@ -7,10 +7,10 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
-import elemental.json.Json;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -38,6 +38,9 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
     @UrlParameter
     public String id;
     Button btn = new Button("See Dog");
+    Button createUserButton = new Button("Create new user");
+    Button backToMain = new Button("Back to See Shelters");
+
 
     Image img;
     TextField nameField;
@@ -49,6 +52,12 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
     public DogSheet(){
         fl.setResponsiveSteps(new FormLayout.ResponsiveStep("10em", 1));
         btn.addClickListener(e-> getDog());
+        createUserButton.addClickListener(e->{
+            getUI().ifPresent(ui -> ui.navigate("UserForm"));
+        });
+        backToMain.addClickListener(e->{
+           getUI().ifPresent(ui-> ui.navigate("MainView"));
+        });
         add(btn);
     }
 
@@ -70,18 +79,22 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
         nameField = new TextField();
         nameField.setLabel("Name");
         nameField.setValue(dog.getString("name"));
+        nameField.setEnabled(false);
 
         breedField = new TextField();
         breedField.setLabel("Breed");
         breedField.setValue(dog.getString("breed"));
+        breedField.setEnabled(false);
 
         codeField = new TextField();
         codeField.setLabel("Code");
         codeField.setValue(String.valueOf(dog.getInt("code")));
+        codeField.setEnabled(false);
 
         ageField = new TextField();
         ageField.setLabel("Age (months)");
         ageField.setValue(String.valueOf(dog.getInt("age")));
+        ageField.setEnabled(false);
 
         getAppoints(dog);
 
@@ -95,7 +108,8 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
 
         GridCrud<Appoint> a = new GridCrud(Appoint.class);
 
-
+        a.getGrid().removeColumnByKey("dogName");
+        a.getGrid().removeColumnByKey("dogId");
         a.getCrudFormFactory().setDisabledProperties("dogName", "dogId", "userName");
         a.setCrudListener(new CrudListener<Appoint>() {
             @Override
@@ -152,13 +166,12 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
                 try{
                     String putEndpoint = "http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Appoint/updateAppoint";
 
-
                     HttpPut httpPut = new HttpPut(putEndpoint);
                     httpPut.setHeader("Accept", "application/json");
                     httpPut.setHeader("Content-type", "application/json");
 
 
-                    StringEntity params = new StringEntity(appointJson.toString());
+                    StringEntity params = new StringEntity(appointJson.toString(), ContentType.APPLICATION_JSON);
 
                     httpPut.setEntity(params);
 
@@ -186,6 +199,8 @@ public class DogSheet extends Div implements HasUrlParameterMapping {
 
 
         add(fl);
+        add(createUserButton);
+        add(backToMain);
         btn.setVisible(false);
 
 
