@@ -3,6 +3,8 @@ package com.shelterApp;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -43,12 +45,14 @@ public class UserForm extends VerticalLayout {
         telephoneField = new TextField();
         telephoneField.setLabel("Telephone");
         telephoneField.setSizeFull();
+        telephoneField.setPattern("[0-9]{9}");
         emailField = new TextField();
         emailField.setLabel("Email");
         emailField.setSizeFull();
         dniField = new TextField();
         dniField.setLabel("DNI");
         dniField.setSizeFull();
+
 
         Button createUser = new Button("Create user");
         Button cancelButton = new Button("Cancel Operation");
@@ -65,23 +69,37 @@ public class UserForm extends VerticalLayout {
     }
 
     private void addUser() {
-        try{
-            CloseableHttpClient httpClient = HttpClients.createDefault();
-            HttpPost post = new HttpPost("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/AppUser/createUser");
-            JSONObject jsonObjectUser = new JSONObject();
-            jsonObjectUser.put("name", nameField.getValue());
-            jsonObjectUser.put("lastName1", lastName1Field.getValue());
-            jsonObjectUser.put("lastName2", lastName2Field.getValue());
-            jsonObjectUser.put("telephone", String.valueOf(telephoneField.getValue()));
-            jsonObjectUser.put("email", emailField.getValue());
-            jsonObjectUser.put("dni", dniField.getValue());
-            post.setEntity(new StringEntity(jsonObjectUser.toString()));
-            post.setHeader("Content-type", "application/json");
-            CloseableHttpResponse response = httpClient.execute(post);
-            System.out.println(EntityUtils.toString(response.getEntity()));
-        }catch(IOException e){
-            e.printStackTrace();
+
+
+        if(nameField.getValue() != "" && lastName1Field.getValue() != "" && lastName2Field.getValue() != "" && telephoneField.getValue() != "" && emailField.getValue() != "" && dniField.getValue() != ""){
+            try{
+                CloseableHttpClient httpClient = HttpClients.createDefault();
+                HttpPost post = new HttpPost("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/AppUser/createUser");
+                JSONObject jsonObjectUser = new JSONObject();
+                jsonObjectUser.put("name", nameField.getValue());
+                jsonObjectUser.put("lastName1", lastName1Field.getValue());
+                jsonObjectUser.put("lastName2", lastName2Field.getValue());
+                jsonObjectUser.put("telephone", String.valueOf(telephoneField.getValue()));
+                jsonObjectUser.put("email", emailField.getValue());
+                jsonObjectUser.put("dni", dniField.getValue());
+                post.setEntity(new StringEntity(jsonObjectUser.toString()));
+                post.setHeader("Content-type", "application/json");
+                CloseableHttpResponse response = httpClient.execute(post);
+                System.out.println(EntityUtils.toString(response.getEntity()));
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+
+        }else{
+            Label message = new Label("There are some empty fields");
+            Notification notification = new Notification(message);
+            notification.setPosition(Notification.Position.MIDDLE);
+            notification.setDuration(3000);
+            notification.open();
+
         }
+
+
 
     }
 }

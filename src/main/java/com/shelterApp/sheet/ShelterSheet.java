@@ -53,6 +53,7 @@ public class ShelterSheet extends Div implements HasUrlParameterMapping {
     FormLayout fl = new FormLayout();
     Button getAll = new Button("See Shelter");
     Button btnEmployeeDetails = new Button("Details for employee");
+    Button btnBack = new Button("Go back");
     public ShelterSheet(){
 
         getAll.addClickListener(e-> getShelter());
@@ -92,27 +93,22 @@ public class ShelterSheet extends Div implements HasUrlParameterMapping {
             @Override
             public Employee add(Employee employee) {
                 try {
+                    JSONObject employeeJson = new JSONObject();
+                    employeeJson.put("dni", employee.getDNI());
+                    employeeJson.put("email", employee.getEmail());
+                    employeeJson.put("lastName1", employee.getLastName1());
+                    employeeJson.put("lastName2", employee.getLastName2());
+                    employeeJson.put("name", employee.getName());
+                    employeeJson.put("telephone", String.valueOf(employee.getTelephone()));
+                    CloseableHttpClient httpClient = HttpClients.createDefault();
+                    HttpPost post = new HttpPost("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Employee/createEmployee?ShelterID="+Id);
 
-                    HttpPost post = new HttpPost("http://localhost:8081/ShelterApi-0.0.1-SNAPSHOT/rest/Employee/createEmployee");
+                    post.setEntity(new StringEntity(employeeJson.toString()));
+                    post.setHeader("Content-type", "application/json");
+                    CloseableHttpResponse response = httpClient.execute(post);
+                    System.out.println(EntityUtils.toString(response.getEntity()));
 
-                    // add request parameter, form parameters
-                    List<NameValuePair> urlParameters = new ArrayList<>();
-                    urlParameters.add(new BasicNameValuePair("dni", employee.getDNI()));
-                    urlParameters.add(new BasicNameValuePair("email", employee.getEmail()));
-                    urlParameters.add(new BasicNameValuePair("lastName1", employee.getLastName1()));
-                    urlParameters.add(new BasicNameValuePair("lastName2", employee.getLastName2()));
-                    urlParameters.add(new BasicNameValuePair("shelterId", Id));
-                    urlParameters.add(new BasicNameValuePair("telephone", String.valueOf(employee.getTelephone())));
-
-
-                    post.setEntity(new UrlEncodedFormEntity(urlParameters));
-
-                    try (CloseableHttpClient httpClient = HttpClients.createDefault();
-                         CloseableHttpResponse response = httpClient.execute(post)) {
-
-                        System.out.println(EntityUtils.toString(response.getEntity()));
-                    }
-
+                    httpClient.close();
                 } catch(IOException e){
                     e.printStackTrace();
                 }
@@ -138,7 +134,6 @@ public class ShelterSheet extends Div implements HasUrlParameterMapping {
                     HttpPut httpPut = new HttpPut(putEndpoint);
                     httpPut.setHeader("Accept", "application/json");
                     httpPut.setHeader("Content-type", "application/json");
-
 
                     StringEntity params = new StringEntity(employeeJson.toString(), ContentType.APPLICATION_JSON);
 
@@ -178,6 +173,8 @@ public class ShelterSheet extends Div implements HasUrlParameterMapping {
 
 
         this.add(a);
+        add(btnBack);
+        add(btnEmployeeDetails);
     }
 
 
@@ -209,10 +206,14 @@ public class ShelterSheet extends Div implements HasUrlParameterMapping {
 
 
         fl.add(img, labelField, labelField2, btn);
-        add(fl, btnEmployeeDetails);
+        add(fl);
 
 
 
+
+        btnBack.addClickListener(e->{
+            getUI().ifPresent(ui -> ui.navigate("MainView"));
+        });
         btnEmployeeDetails.addClickListener(e->{
             Dialog dialog = new Dialog();
             TextField employeeIdField = new TextField();

@@ -40,6 +40,7 @@ import java.util.List;
 public class EmployeeSheet extends Div implements HasUrlParameterMapping {
     FormLayout fl = new FormLayout();
     Button dogDetails = new Button("Details for dog");
+    Button goBack = new Button("Go back");
 
 
     @UrlParameter
@@ -49,6 +50,9 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
 
         fl.setResponsiveSteps(new FormLayout.ResponsiveStep("10em", 1));
         btn.addClickListener(e-> getEmployee());
+        goBack.addClickListener(e->{
+           getUI().ifPresent(ui -> ui.navigate("MainView"));
+        });
         add(btn);
 
     }
@@ -126,7 +130,8 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
         });
 
 
-        add(title, dogDetails);
+        add(title);
+
 
 
 
@@ -181,6 +186,7 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
             @Override
             public Dog update(Dog dog) {
                 JSONObject dogJson = new JSONObject();
+                dogJson.put("id", dog.getId());
                 dogJson.put("name",dog.getName());
                 dogJson.put("breed", dog.getBreed());
                 dogJson.put("age", dog.getAge());
@@ -227,5 +233,7 @@ public class EmployeeSheet extends Div implements HasUrlParameterMapping {
             }
         });
         add(a);
+        add(dogDetails);
+        add(goBack);
     }
 }

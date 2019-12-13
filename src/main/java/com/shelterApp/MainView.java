@@ -34,7 +34,7 @@ import java.util.List;
  * The main view contains a button and a click listener.
  */
 @Route("MainView")
-@PWA(name = "Eloy", shortName = "elo2")
+@PWA(name = "ShelterApp", shortName = "Shelter")
 public class MainView extends Div {
     FormLayout fl = new FormLayout();
 
@@ -62,7 +62,6 @@ public class MainView extends Div {
         }
         addCards(Shelters);
     }
-
     private void addCards(List<Shelter> shelters) throws IOException {
         for (Shelter shelterOBJ : shelters) {
             Image image = new Image(shelterOBJ.getImg(), "bg.png");
